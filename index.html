@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IO Messenger — Бета Тест</title>
+<meta name="description" content="IO Messenger — новый мессенджер. Присоединяйся к бета-тесту!">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%235288c1'/><text x='50' y='72' font-size='62' font-weight='bold' text-anchor='middle' fill='white' font-family='Arial'>IO</text></svg>">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+  body {
+    background: #0e1621; color: #fff; min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(82,136,193,0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(82,136,193,0.1) 0%, transparent 50%);
+  }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+  /* ===== ЭКРАНЫ ===== */
+  .page { display: none; }
+  .page.active { display: block; animation: fadeIn 0.5s; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== ХЕДЕР ===== */
+  .header { text-align: center; margin-bottom: 50px; }
+
+  .logo-wrap {
+    display: inline-block; position: relative; margin-bottom: 24px;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .logo {
+    width: 100px; height: 100px; border-radius: 24px;
+    background: linear-gradient(135deg, #5288c1, #3b6ba3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 46px; font-weight: 700; color: #fff;
+    box-shadow: 0 20px 50px rgba(82,136,193,0.4);
+    letter-spacing: -2px;
+  }
+
+  h1 {
+    font-size: 42px; font-weight: 700; margin-bottom: 12px;
+    background: linear-gradient(135deg, #fff, #7dd3fc);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .beta-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff; font-size: 13px; font-weight: 700;
+    padding: 6px 14px; border-radius: 20px;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(245,158,11,0.4);
+    animation: pulse-badge 2s infinite;
+  }
+  @keyframes pulse-badge {
+    0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(245,158,11,0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 4px 25px rgba(245,158,11,0.7); }
+  }
+
+  .tagline {
+    color: #7d8b99; font-size: 17px; max-width: 500px;
+    margin: 0 auto; line-height: 1.6;
+  }
+
+  /* ===== КАРТОЧКА СКАЧИВАНИЯ ===== */
+  .download-card {
+    background: #17212b; border-radius: 24px; padding: 36px 28px;
+    margin-bottom: 40px; text-align: center;
+    border: 1px solid #2b3a4a;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  .download-title { font-size: 22px; margin-bottom: 8px; }
+  .download-sub { color: #7d8b99; font-size: 14px; margin-bottom: 24px; }
+
+  .download-btn {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: linear-gradient(135deg, #5288c1, #3b6ba3);
+    color: #fff; text-decoration: none;
+    padding: 18px 36px; border-radius: 16px;
+    font-size: 18px; font-weight: 600;
+    transition: all 0.2s;
+    box-shadow: 0 10px 30px rgba(82,136,193,0.4);
+    border: none; cursor: pointer; font-family: inherit;
+  }
+  .download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(82,136,193,0.6);
+  }
+  .download-btn:active { transform: translateY(0); }
+  .download-btn .icon { font-size: 24px; }
+
+  .file-info {
+    margin-top: 16px; font-size: 12px;
+    color: #5a6873; font-family: monospace;
+  }
+
+  .beta-warning {
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 12px; padding: 14px 18px;
+    margin-top: 20px; font-size: 13px; color: #fbbf24;
+    text-align: left; display: flex; gap: 10px;
+    line-height: 1.5;
+  }
+
+  /* ===== ФИЧИ ===== */
+  .section-title {
+    font-size: 22px; margin-bottom: 24px; text-align: center;
+  }
+
+  .features {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px; margin-bottom: 40px;
+  }
+
+  .feature {
+    background: #17212b; border-radius: 16px;
+    padding: 22px; border: 1px solid #2b3a4a;
+    transition: all 0.2s;
+  }
+  .feature:hover {
+    border-color: #5288c1; transform: translateY(-3px);
+  }
+
+  .feature-icon { font-size: 32px; margin-bottom: 10px; }
+  .feature-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .feature-text { font-size: 13px; color: #7d8b99; line-height: 1.5; }
+
+  .feature-note {
+    font-size: 11px;
+    color: #fbbf24;
+    margin-top: 10px;
+    padding: 6px 8px;
+    background: rgba(245,158,11,0.1);
+    border-radius: 6px;
+    line-height: 1.4;
+    border-left: 2px solid #f59e0b;
+  }
+
+  /* ===== ИНСТРУКЦИЯ ===== */
+  .install-steps {
+    background: #17212b; border-radius: 16px; padding: 24px;
+    border: 1px solid #2b3a4a; margin-bottom: 40px;
+  }
+  .install-steps h3 { font-size: 17px; margin-bottom: 16px; }
+
+  .step {
+    display: flex; gap: 14px; margin-bottom: 14px;
+    font-size: 14px; color: #b8c4d0; line-height: 1.5;
+  }
+  .step:last-child { margin-bottom: 0; }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: #5288c1; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+  }
+
+  /* ===== ФУТЕР ===== */
+  .footer {
+    text-align: center; padding: 30px 0 20px;
+    color: #5a6873; font-size: 13px;
+    border-top: 1px solid #1e2936; margin-top: 20px;
+  }
+
+  .version {
+    display: inline-block; font-family: monospace;
+    background: #17212b; padding: 3px 10px; border-radius: 6px;
+    color: #7d8b99; font-size: 12px; margin-top: 8px;
+  }
+
+  /* ============================================
+     ЭКРАН ОЖИДАНИЯ
+     ============================================ */
+  .wait-screen {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 100vh; padding: 30px 20px; text-align: center;
+  }
+
+  .wait-icon {
+    width: 100px; height: 100px; border-radius: 24px;
+    background: linear-gradient(135deg, #5288c1, #3b6ba3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 46px; font-weight: 700; color: #fff;
+    box-shadow: 0 20px 50px rgba(82,136,193,0.4);
+    margin-bottom: 30px; letter-spacing: -2px;
+  }
+
+  .wait-title {
+    font-size: 26px; font-weight: 700; margin-bottom: 10px;
+  }
+
+  .wait-sub {
+    color: #7d8b99; font-size: 15px; max-width: 400px;
+    margin-bottom: 40px; line-height: 1.6;
+  }
+
+  /* Круговой прогресс */
+  .circle-wrap {
+    position: relative; width: 140px; height: 140px;
+    margin-bottom: 30px;
+  }
+
+  .circle-svg {
+    transform: rotate(-90deg);
+    width: 140px; height: 140px;
+  }
+
+  .circle-bg {
+    fill: none; stroke: #17212b; stroke-width: 8;
+  }
+
+  .circle-progress {
+    fill: none; stroke: url(#gradient); stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 408;
+    stroke-dashoffset: 408;
+    transition: stroke-dashoffset 0.1s linear;
+  }
+
+  .circle-number {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 42px; font-weight: 700;
+    background: linear-gradient(135deg, #fff, #7dd3fc);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .wait-status {
+    color: #7d8b99; font-size: 14px;
+    margin-bottom: 30px; min-height: 20px;
+  }
+
+  /* Финальная кнопка */
+  .install-btn {
+    display: none; align-items: center; gap: 12px;
+    background: linear-gradient(135deg, #4dca5c, #3ba548);
+    color: #fff; text-decoration: none;
+    padding: 18px 40px; border-radius: 16px;
+    font-size: 18px; font-weight: 600;
+    box-shadow: 0 10px 30px rgba(77,202,92,0.5);
+    border: none; cursor: pointer; font-family: inherit;
+    transition: all 0.2s;
+    animation: pulse-green 1.5s infinite;
+  }
+  .install-btn.show { display: inline-flex; }
+
+  @keyframes pulse-green {
+    0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(77,202,92,0.5); }
+    50% { transform: scale(1.03); box-shadow: 0 15px 40px rgba(77,202,92,0.7); }
+  }
+
+  .install-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  .install-btn .icon { font-size: 24px; }
+
+  .back-btn {
+    margin-top: 24px; color: #7d8b99; font-size: 14px;
+    text-decoration: none; padding: 10px 20px;
+    border: 1px solid #2b3a4a; border-radius: 12px;
+    background: transparent; cursor: pointer; font-family: inherit;
+    transition: all 0.2s;
+  }
+  .back-btn:hover { border-color: #5288c1; color: #fff; }
+
+  /* Доставлено */
+  .success-check {
+    display: none;
+    width: 60px; height: 60px; border-radius: 50%;
+    background: rgba(77,202,92,0.15);
+    align-items: center; justify-content: center;
+    font-size: 32px; margin-bottom: 20px;
+    animation: fadeIn 0.4s;
+  }
+  .success-check.show { display: flex; }
+
+  /* Адаптив */
+  @media (max-width: 500px) {
+    h1 { font-size: 32px; }
+    .logo { width: 80px; height: 80px; font-size: 36px; }
+    .container { padding: 30px 16px; }
+    .download-card { padding: 28px 20px; }
+    .download-btn { padding: 16px 28px; font-size: 16px; }
+    .wait-title { font-size: 22px; }
+    .circle-wrap, .circle-svg { width: 120px; height: 120px; }
+    .circle-number { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     ЭКРАН 1: ГЛАВНАЯ
+     ============================================ -->
+<div class="page active" id="pageMain">
+  <div class="container">
+
+    <header class="header">
+      <div class="logo-wrap">
+        <div class="logo">IO</div>
+      </div>
+      <div class="beta-badge">🧪 Бета Тест</div>
+      <h1>IO Messenger</h1>
+      <p class="tagline">Быстрый и простой мессенджер для общения с друзьями. Присоединяйся к бета-тестированию!</p>
+    </header>
+
+    <div class="download-card">
+      <div class="download-title">📲 Скачать приложение</div>
+      <div class="download-sub">Доступно для Android</div>
+      <button class="download-btn" onclick="goToWaitScreen()">
+        <span class="icon">⬇️</span>
+        <span>Скачать APK</span>
+      </button>
+      <div class="file-info">Android 7.0+ · ~5 МБ</div>
+
+      <div class="beta-warning">
+        <span>⚠️</span>
+        <span>Это <b>бета-версия</b>. Возможны баги и незавершённые функции. Если нашли проблему — сообщите разработчику.</span>
+      </div>
+    </div>
+
+    <h2 class="section-title">Что уже есть</h2>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">💬</div>
+        <div class="feature-title">Быстрые сообщения</div>
+        <div class="feature-text">Мгновенная доставка текста между пользователями</div>
+        <div class="feature-note">⚠️ Сообщения иногда не отправляются из-за недоделанного кода</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🎤</div>
+        <div class="feature-title">Голосовые</div>
+        <div class="feature-text">Записывай и отправляй голосовые сообщения</div>
+        <div class="feature-note">⚠️ Максимум 15 секунд, длиннее — не отправятся</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📷</div>
+        <div class="feature-title">Фото</div>
+        <div class="feature-text">Делись фотографиями прямо в чате</div>
+        <div class="feature-note">⚠️ Фото сжимаются, качество может быть низким</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📞</div>
+        <div class="feature-title">Звонки</div>
+        <div class="feature-text">Аудиозвонки через интернет</div>
+        <div class="feature-note">⚠️ Стабильно работает только на одном Wi-Fi</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">✓✓</div>
+        <div class="feature-title">Статусы</div>
+        <div class="feature-text">Видно, доставлено и прочитано сообщение</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-title">PIN-код</div>
+        <div class="feature-text">Защита входа в приложение</div>
+      </div>
+    </div>
+
+    <div class="install-steps">
+      <h3>📖 Как установить</h3>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>Нажми кнопку <b>«Скачать APK»</b> выше</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>Подожди <b>5 секунд</b> — появится кнопка «Установить»</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>Если появится предупреждение — разреши установку из <b>«Неизвестных источников»</b></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>Открой приложение, введи номер телефона и получи код</div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div>Придумай PIN и начни общаться! 🎉</div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div>© 2025 IO Messenger · Сделано с ❤️</div>
+      <div class="version">beta v0.7</div>
+    </footer>
+
+  </div>
+</div>
+
+<!-- ============================================
+     ЭКРАН 2: ОЖИДАНИЕ 5 СЕКУНД
+     ============================================ -->
+<div class="page" id="pageWait">
+  <div class="wait-screen">
+
+    <div class="wait-icon">IO</div>
+
+    <div class="wait-title">Подготовка к скачиванию...</div>
+    <div class="wait-sub">Пожалуйста, подождите несколько секунд. Ссылка на скачивание появится автоматически.</div>
+
+    <div class="circle-wrap">
+      <svg class="circle-svg" viewBox="0 0 140 140">
+        <defs>
+          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#5288c1"/>
+            <stop offset="100%" stop-color="#7dd3fc"/>
+          </linearGradient>
+        </defs>
+        <circle class="circle-bg" cx="70" cy="70" r="65"></circle>
+        <circle class="circle-progress" id="circleProgress" cx="70" cy="70" r="65"></circle>
+      </svg>
+      <div class="circle-number" id="circleNumber">5</div>
+    </div>
+
+    <div class="wait-status" id="waitStatus">Подготовка файла...</div>
+
+    <div class="success-check" id="successCheck">✅</div>
+
+    <a class="install-btn" id="installBtn" href="io-messenger.apk" download>
+      <span class="icon">📥</span>
+      <span>Установить приложение</span>
+    </a>
+
+    <button class="back-btn" onclick="goToMainScreen()">← Вернуться назад</button>
+
+  </div>
+</div>
+
+<script>
+  var waitTimer = null;
+  var waitInterval = null;
+  var secondsLeft = 5;
+  var totalCircleLength = 408;
+
+  function goToWaitScreen() {
+    document.getElementById('pageMain').classList.remove('active');
+    document.getElementById('pageWait').classList.add('active');
+    window.scrollTo(0, 0);
+
+    secondsLeft = 5;
+    document.getElementById('circleNumber').style.display = '';
+    document.getElementById('circleNumber').textContent = '5';
+    document.getElementById('circleProgress').style.strokeDashoffset = totalCircleLength;
+    document.getElementById('installBtn').classList.remove('show');
+    document.getElementById('successCheck').classList.remove('show');
+    document.getElementById('waitStatus').textContent = 'Подготовка файла...';
+
+    var startTime = Date.now();
+    var duration = 5000;
+
+    if (waitInterval) clearInterval(waitInterval);
+    waitInterval = setInterval(function() {
+      var elapsed = Date.now() - startTime;
+      var progress = Math.min(elapsed / duration, 1);
+      document.getElementById('circleProgress').style.strokeDashoffset = totalCircleLength * (1 - progress);
+    }, 50);
+
+    if (waitTimer) clearInterval(waitTimer);
+    waitTimer = setInterval(function() {
+      secondsLeft--;
+      if (secondsLeft <= 0) {
+        clearInterval(waitTimer);
+        clearInterval(waitInterval);
+        finishWait();
+      } else {
+        document.getElementById('circleNumber').textContent = secondsLeft;
+      }
+    }, 1000);
+  }
+
+  function finishWait() {
+    document.getElementById('circleNumber').style.display = 'none';
+    document.getElementById('successCheck').classList.add('show');
+    document.getElementById('waitStatus').textContent = '✅ Файл готов! Нажмите «Установить»';
+    document.getElementById('installBtn').classList.add('show');
+  }
+
+  function goToMainScreen() {
+    if (waitTimer) { clearInterval(waitTimer); waitTimer = null; }
+    if (waitInterval) { clearInterval(waitInterval); waitInterval = null; }
+    document.getElementById('circleNumber').style.display = '';
+    document.getElementById('pageWait').classList.remove('active');
+    document.getElementById('pageMain').classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  document.getElementById('installBtn').addEventListener('click', function() {
+    document.getElementById('waitStatus').textContent = '⬇️ Скачивание началось...';
+  });
+</script>
+
+</body>
+</html>
