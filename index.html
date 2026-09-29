@@ -4,516 +4,448 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IO Messenger — Бета Тест</title>
-<meta name="description" content="IO Messenger — новый мессенджер. Присоединяйся к бета-тесту!">
+<meta name="description" content="IO Messenger — быстрый и безопасный мессенджер. Уведомления, шифрование, каталог.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%235288c1'/><text x='50' y='72' font-size='62' font-weight='bold' text-anchor='middle' fill='white' font-family='Arial'>IO</text></svg>">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-  body {
-    background: #0e1621; color: #fff; min-height: 100vh;
-    overflow-x: hidden;
-  }
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+html{scroll-behavior:smooth}
+body{background:#0a1420;color:#fff;overflow-x:hidden;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 20% 10%,rgba(82,136,193,0.2) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(82,136,193,0.15) 0%,transparent 50%),radial-gradient(circle at 50% 50%,rgba(125,211,252,0.08) 0%,transparent 70%)}
 
-  body::before {
-    content: ''; position: fixed; inset: 0; z-index: -1;
-    background:
-      radial-gradient(circle at 20% 10%, rgba(82,136,193,0.15) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(82,136,193,0.1) 0%, transparent 50%);
-  }
+.nav{position:sticky;top:0;z-index:100;background:rgba(10,20,32,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(82,136,193,0.15);padding:14px 20px}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.nav-logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#5288c1,#7dd3fc);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff}
+.nav-links{display:flex;gap:20px}
+.nav-links a{color:#7d8b99;text-decoration:none;font-size:14px;transition:0.2s}
+.nav-links a:hover{color:#7dd3fc}
+@media(max-width:700px){.nav-links{display:none}}
 
-  .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+.hero{max-width:1100px;margin:0 auto;padding:70px 20px 50px;text-align:center}
+.beta-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-size:13px;font-weight:700;padding:8px 18px;border-radius:24px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px;box-shadow:0 4px 20px rgba(245,158,11,0.5);animation:pulse-badge 2s infinite}
+@keyframes pulse-badge{0%,100%{transform:scale(1);box-shadow:0 4px 20px rgba(245,158,11,0.5)}50%{transform:scale(1.05);box-shadow:0 8px 30px rgba(245,158,11,0.8)}}
+.hero h1{font-size:64px;font-weight:900;line-height:1;margin-bottom:20px;background:linear-gradient(135deg,#fff 0%,#7dd3fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-2px}
+.hero .tagline{font-size:22px;color:#b8c4d0;max-width:600px;margin:0 auto 30px;line-height:1.5}
+.hero-text{max-width:650px;margin:0 auto 40px;font-size:17px;color:#b8c4d0;line-height:1.7;text-align:center}
+.hero-cta{font-size:18px;color:#7dd3fc;font-weight:600;margin-bottom:40px}
 
-  /* ===== ЭКРАНЫ ===== */
-  .page { display: none; }
-  .page.active { display: block; animation: fadeIn 0.5s; }
+.new-badge{display:inline-block;background:linear-gradient(135deg,#4dca5c,#3ba548);color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:8px;text-transform:uppercase;letter-spacing:0.5px;margin-left:6px;vertical-align:middle}
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+.download-buttons{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-bottom:20px}
+.dl-btn{display:inline-flex;align-items:center;gap:12px;padding:18px 32px;border-radius:16px;font-size:16px;font-weight:700;text-decoration:none;cursor:pointer;border:none;transition:0.2s;min-width:240px;justify-content:center}
+.dl-btn-main{background:linear-gradient(135deg,#5288c1,#3b6ba3);color:#fff;box-shadow:0 10px 30px rgba(82,136,193,0.5)}
+.dl-btn-codes{background:linear-gradient(135deg,#4dca5c,#3ba548);color:#fff;box-shadow:0 10px 30px rgba(77,202,92,0.5)}
+.dl-btn:hover{transform:translateY(-3px)}
+.dl-btn .icon{font-size:22px}
+.dl-btn .text{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.dl-btn .text small{font-size:11px;font-weight:400;opacity:0.8}
+.file-info{font-size:12px;color:#5a6873;font-family:monospace;margin-top:12px}
 
-  /* ===== ХЕДЕР ===== */
-  .header { text-align: center; margin-bottom: 50px; }
+.section{max-width:1000px;margin:0 auto;padding:70px 20px}
+.section-title{font-size:38px;font-weight:800;text-align:center;margin-bottom:14px;letter-spacing:-1px}
+.section-sub{text-align:center;color:#7d8b99;font-size:16px;margin-bottom:50px;max-width:600px;margin-left:auto;margin-right:auto}
 
-  .logo-wrap {
-    display: inline-block; position: relative; margin-bottom: 24px;
-    animation: float 3s ease-in-out infinite;
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-  }
+.card{background:linear-gradient(180deg,rgba(23,33,43,1) 0%,rgba(23,33,43,0.6) 100%);border:1px solid rgba(82,136,193,0.2);border-radius:24px;padding:40px 32px;margin-bottom:24px;transition:0.3s}
+.card:hover{border-color:rgba(82,136,193,0.4);box-shadow:0 20px 40px rgba(82,136,193,0.1)}
 
-  .logo {
-    width: 100px; height: 100px; border-radius: 24px;
-    background: linear-gradient(135deg, #5288c1, #3b6ba3);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 46px; font-weight: 700; color: #fff;
-    box-shadow: 0 20px 50px rgba(82,136,193,0.4);
-    letter-spacing: -2px;
-  }
+.features-list{list-style:none}
+.features-list li{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(82,136,193,0.1);font-size:16px;color:#d0d8e0;line-height:1.5}
+.features-list li:last-child{border-bottom:none}
+.features-list .emoji{font-size:24px;flex-shrink:0;width:32px;text-align:center}
+.features-list b{color:#fff}
+.feature-note{display:block;font-size:12px;color:#fbbf24;margin-top:4px;line-height:1.4;font-style:italic}
 
-  h1 {
-    font-size: 42px; font-weight: 700; margin-bottom: 12px;
-    background: linear-gradient(135deg, #fff, #7dd3fc);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+.news-list{list-style:none}
+.news-list li{padding:16px 0;border-bottom:1px solid rgba(82,136,193,0.1);font-size:15px;color:#d0d8e0;line-height:1.6;display:flex;gap:12px;align-items:flex-start}
+.news-list li:last-child{border-bottom:none}
+.news-list .news-icon{font-size:22px;flex-shrink:0}
+.news-list b{color:#7dd3fc;display:block;margin-bottom:4px}
 
-  .beta-badge {
-    display: inline-block;
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: #fff; font-size: 13px; font-weight: 700;
-    padding: 6px 14px; border-radius: 20px;
-    letter-spacing: 1.5px; text-transform: uppercase;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(245,158,11,0.4);
-    animation: pulse-badge 2s infinite;
-  }
-  @keyframes pulse-badge {
-    0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(245,158,11,0.4); }
-    50% { transform: scale(1.05); box-shadow: 0 4px 25px rgba(245,158,11,0.7); }
-  }
+.security-list{list-style:none}
+.security-list li{padding:20px 0;border-bottom:1px solid rgba(82,136,193,0.1);font-size:16px;color:#d0d8e0;line-height:1.6}
+.security-list li:last-child{border-bottom:none}
+.security-list b{color:#7dd3fc;display:block;font-size:17px;margin-bottom:4px}
 
-  .tagline {
-    color: #7d8b99; font-size: 17px; max-width: 500px;
-    margin: 0 auto; line-height: 1.6;
-  }
+.info-box{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:14px;padding:20px 24px;font-size:15px;color:#fbbf24;line-height:1.6;margin:24px 0}
+.info-box b{color:#fbbf24}
 
-  /* ===== КАРТОЧКА СКАЧИВАНИЯ ===== */
-  .download-card {
-    background: #17212b; border-radius: 24px; padding: 36px 28px;
-    margin-bottom: 40px; text-align: center;
-    border: 1px solid #2b3a4a;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-  }
+.cta-text{text-align:center;font-size:18px;color:#7dd3fc;font-weight:600;margin-top:30px;line-height:1.5}
 
-  .download-title { font-size: 22px; margin-bottom: 8px; }
-  .download-sub { color: #7d8b99; font-size: 14px; margin-bottom: 24px; }
+.faq-item{background:rgba(23,33,43,0.7);border:1px solid rgba(82,136,193,0.15);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:0.2s}
+.faq-item:hover{border-color:rgba(82,136,193,0.4)}
+.faq-q{padding:20px 24px;display:flex;justify-content:space-between;align-items:center;font-size:16px;font-weight:600;user-select:none;gap:12px}
+.faq-q .arrow{transition:0.3s;color:#5288c1;font-size:20px;flex-shrink:0}
+.faq-item.open .arrow{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height 0.3s ease,padding 0.3s ease;padding:0 24px;color:#7d8b99;font-size:15px;line-height:1.6}
+.faq-item.open .faq-a{max-height:400px;padding:0 24px 20px}
 
-  .download-btn {
-    display: inline-flex; align-items: center; gap: 12px;
-    background: linear-gradient(135deg, #5288c1, #3b6ba3);
-    color: #fff; text-decoration: none;
-    padding: 18px 36px; border-radius: 16px;
-    font-size: 18px; font-weight: 600;
-    transition: all 0.2s;
-    box-shadow: 0 10px 30px rgba(82,136,193,0.4);
-    border: none; cursor: pointer; font-family: inherit;
-  }
-  .download-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 40px rgba(82,136,193,0.6);
-  }
-  .download-btn:active { transform: translateY(0); }
-  .download-btn .icon { font-size: 24px; }
+.footer{text-align:center;padding:50px 20px 30px;color:#5a6873;font-size:13px;border-top:1px solid rgba(82,136,193,0.15);margin-top:40px}
+.footer-logo{font-size:24px;font-weight:800;background:linear-gradient(135deg,#fff,#7dd3fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px}
+.footer-version{display:inline-block;background:rgba(23,33,43,0.8);padding:4px 12px;border-radius:8px;font-family:monospace;font-size:12px;margin-top:12px}
 
-  .file-info {
-    margin-top: 16px; font-size: 12px;
-    color: #5a6873; font-family: monospace;
-  }
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(10px)}
+.modal-overlay.active{display:flex}
+.modal-download{background:linear-gradient(180deg,#17212b,#0e1621);border:1px solid rgba(82,136,193,0.4);border-radius:24px;padding:40px 30px;text-align:center;max-width:400px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,0.6);animation:modalIn 0.4s}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-icon{width:80px;height:80px;margin:0 auto 20px;border-radius:20px;background:linear-gradient(135deg,#5288c1,#7dd3fc);display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;box-shadow:0 10px 30px rgba(82,136,193,0.5)}
+.modal-title{font-size:22px;font-weight:700;margin-bottom:8px}
+.modal-sub{font-size:14px;color:#7d8b99;margin-bottom:30px}
+.progress-circle{width:120px;height:120px;margin:0 auto 24px;position:relative}
+.progress-circle svg{transform:rotate(-90deg)}
+.progress-circle .bg{fill:none;stroke:#17212b;stroke-width:8}
+.progress-circle .progress{fill:none;stroke:url(#grad);stroke-width:8;stroke-linecap:round;stroke-dasharray:339;stroke-dashoffset:339;transition:stroke-dashoffset 0.1s linear}
+.progress-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;background:linear-gradient(135deg,#fff,#7dd3fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.modal-status{font-size:14px;color:#7d8b99;margin-bottom:20px;min-height:20px}
+.install-btn{display:none;padding:16px 40px;background:linear-gradient(135deg,#4dca5c,#3ba548);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;width:100%;box-shadow:0 10px 30px rgba(77,202,92,0.5);animation:pulse-green 1.5s infinite;text-decoration:none;text-align:center}
+.install-btn.show{display:block}
+@keyframes pulse-green{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+.cancel-btn{margin-top:12px;background:transparent;color:#7d8b99;border:1px solid rgba(82,136,193,0.3);padding:12px 24px;border-radius:12px;font-size:14px;cursor:pointer;width:100%}
 
-  .beta-warning {
-    background: rgba(245,158,11,0.1);
-    border: 1px solid rgba(245,158,11,0.3);
-    border-radius: 12px; padding: 14px 18px;
-    margin-top: 20px; font-size: 13px; color: #fbbf24;
-    text-align: left; display: flex; gap: 10px;
-    line-height: 1.5;
-  }
-
-  /* ===== ФИЧИ ===== */
-  .section-title {
-    font-size: 22px; margin-bottom: 24px; text-align: center;
-  }
-
-  .features {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px; margin-bottom: 40px;
-  }
-
-  .feature {
-    background: #17212b; border-radius: 16px;
-    padding: 22px; border: 1px solid #2b3a4a;
-    transition: all 0.2s;
-  }
-  .feature:hover {
-    border-color: #5288c1; transform: translateY(-3px);
-  }
-
-  .feature-icon { font-size: 32px; margin-bottom: 10px; }
-  .feature-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
-  .feature-text { font-size: 13px; color: #7d8b99; line-height: 1.5; }
-
-  .feature-note {
-    font-size: 11px;
-    color: #fbbf24;
-    margin-top: 10px;
-    padding: 6px 8px;
-    background: rgba(245,158,11,0.1);
-    border-radius: 6px;
-    line-height: 1.4;
-    border-left: 2px solid #f59e0b;
-  }
-
-  /* ===== ИНСТРУКЦИЯ ===== */
-  .install-steps {
-    background: #17212b; border-radius: 16px; padding: 24px;
-    border: 1px solid #2b3a4a; margin-bottom: 40px;
-  }
-  .install-steps h3 { font-size: 17px; margin-bottom: 16px; }
-
-  .step {
-    display: flex; gap: 14px; margin-bottom: 14px;
-    font-size: 14px; color: #b8c4d0; line-height: 1.5;
-  }
-  .step:last-child { margin-bottom: 0; }
-
-  .step-num {
-    flex-shrink: 0;
-    width: 26px; height: 26px; border-radius: 50%;
-    background: #5288c1; color: #fff;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700;
-  }
-
-  /* ===== ФУТЕР ===== */
-  .footer {
-    text-align: center; padding: 30px 0 20px;
-    color: #5a6873; font-size: 13px;
-    border-top: 1px solid #1e2936; margin-top: 20px;
-  }
-
-  .version {
-    display: inline-block; font-family: monospace;
-    background: #17212b; padding: 3px 10px; border-radius: 6px;
-    color: #7d8b99; font-size: 12px; margin-top: 8px;
-  }
-
-  /* ============================================
-     ЭКРАН ОЖИДАНИЯ
-     ============================================ */
-  .wait-screen {
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    min-height: 100vh; padding: 30px 20px; text-align: center;
-  }
-
-  .wait-icon {
-    width: 100px; height: 100px; border-radius: 24px;
-    background: linear-gradient(135deg, #5288c1, #3b6ba3);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 46px; font-weight: 700; color: #fff;
-    box-shadow: 0 20px 50px rgba(82,136,193,0.4);
-    margin-bottom: 30px; letter-spacing: -2px;
-  }
-
-  .wait-title {
-    font-size: 26px; font-weight: 700; margin-bottom: 10px;
-  }
-
-  .wait-sub {
-    color: #7d8b99; font-size: 15px; max-width: 400px;
-    margin-bottom: 40px; line-height: 1.6;
-  }
-
-  /* Круговой прогресс */
-  .circle-wrap {
-    position: relative; width: 140px; height: 140px;
-    margin-bottom: 30px;
-  }
-
-  .circle-svg {
-    transform: rotate(-90deg);
-    width: 140px; height: 140px;
-  }
-
-  .circle-bg {
-    fill: none; stroke: #17212b; stroke-width: 8;
-  }
-
-  .circle-progress {
-    fill: none; stroke: url(#gradient); stroke-width: 8;
-    stroke-linecap: round;
-    stroke-dasharray: 408;
-    stroke-dashoffset: 408;
-    transition: stroke-dashoffset 0.1s linear;
-  }
-
-  .circle-number {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 42px; font-weight: 700;
-    background: linear-gradient(135deg, #fff, #7dd3fc);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .wait-status {
-    color: #7d8b99; font-size: 14px;
-    margin-bottom: 30px; min-height: 20px;
-  }
-
-  /* Финальная кнопка */
-  .install-btn {
-    display: none; align-items: center; gap: 12px;
-    background: linear-gradient(135deg, #4dca5c, #3ba548);
-    color: #fff; text-decoration: none;
-    padding: 18px 40px; border-radius: 16px;
-    font-size: 18px; font-weight: 600;
-    box-shadow: 0 10px 30px rgba(77,202,92,0.5);
-    border: none; cursor: pointer; font-family: inherit;
-    transition: all 0.2s;
-    animation: pulse-green 1.5s infinite;
-  }
-  .install-btn.show { display: inline-flex; }
-
-  @keyframes pulse-green {
-    0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(77,202,92,0.5); }
-    50% { transform: scale(1.03); box-shadow: 0 15px 40px rgba(77,202,92,0.7); }
-  }
-
-  .install-btn:hover {
-    transform: translateY(-2px) scale(1.02);
-  }
-
-  .install-btn .icon { font-size: 24px; }
-
-  .back-btn {
-    margin-top: 24px; color: #7d8b99; font-size: 14px;
-    text-decoration: none; padding: 10px 20px;
-    border: 1px solid #2b3a4a; border-radius: 12px;
-    background: transparent; cursor: pointer; font-family: inherit;
-    transition: all 0.2s;
-  }
-  .back-btn:hover { border-color: #5288c1; color: #fff; }
-
-  /* Доставлено */
-  .success-check {
-    display: none;
-    width: 60px; height: 60px; border-radius: 50%;
-    background: rgba(77,202,92,0.15);
-    align-items: center; justify-content: center;
-    font-size: 32px; margin-bottom: 20px;
-    animation: fadeIn 0.4s;
-  }
-  .success-check.show { display: flex; }
-
-  /* Адаптив */
-  @media (max-width: 500px) {
-    h1 { font-size: 32px; }
-    .logo { width: 80px; height: 80px; font-size: 36px; }
-    .container { padding: 30px 16px; }
-    .download-card { padding: 28px 20px; }
-    .download-btn { padding: 16px 28px; font-size: 16px; }
-    .wait-title { font-size: 22px; }
-    .circle-wrap, .circle-svg { width: 120px; height: 120px; }
-    .circle-number { font-size: 36px; }
-  }
+@media(max-width:600px){.hero h1{font-size:42px}.hero .tagline{font-size:18px}.section-title{font-size:28px}.dl-btn{min-width:100%}.card{padding:28px 22px}.section{padding:50px 16px}}
 </style>
 </head>
 <body>
 
-<!-- ============================================
-     ЭКРАН 1: ГЛАВНАЯ
-     ============================================ -->
-<div class="page active" id="pageMain">
-  <div class="container">
-
-    <header class="header">
-      <div class="logo-wrap">
-        <div class="logo">IO</div>
-      </div>
-      <div class="beta-badge">🧪 Бета Тест</div>
-      <h1>IO Messenger</h1>
-      <p class="tagline">Быстрый и простой мессенджер для общения с друзьями. Присоединяйся к бета-тестированию!</p>
-    </header>
-
-    <div class="download-card">
-      <div class="download-title">📲 Скачать приложение</div>
-      <div class="download-sub">Доступно для Android</div>
-      <button class="download-btn" onclick="goToWaitScreen()">
-        <span class="icon">⬇️</span>
-        <span>Скачать APK</span>
-      </button>
-      <div class="file-info">Android 7.0+ · ~5 МБ</div>
-
-      <div class="beta-warning">
-        <span>⚠️</span>
-        <span>Это <b>бета-версия</b>. Возможны баги и незавершённые функции. Если нашли проблему — сообщите разработчику.</span>
-      </div>
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">IO</div>
+      <span>IO Messenger</span>
     </div>
-
-    <h2 class="section-title">Что уже есть</h2>
-    <div class="features">
-      <div class="feature">
-        <div class="feature-icon">💬</div>
-        <div class="feature-title">Быстрые сообщения</div>
-        <div class="feature-text">Мгновенная доставка текста между пользователями</div>
-        <div class="feature-note">⚠️ Сообщения иногда не отправляются из-за недоделанного кода</div>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🎤</div>
-        <div class="feature-title">Голосовые</div>
-        <div class="feature-text">Записывай и отправляй голосовые сообщения</div>
-        <div class="feature-note">⚠️ Максимум 15 секунд, длиннее — не отправятся</div>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">📷</div>
-        <div class="feature-title">Фото</div>
-        <div class="feature-text">Делись фотографиями прямо в чате</div>
-        <div class="feature-note">⚠️ Фото сжимаются, качество может быть низким</div>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">📞</div>
-        <div class="feature-title">Звонки</div>
-        <div class="feature-text">Аудиозвонки через интернет</div>
-        <div class="feature-note">⚠️ Стабильно работает только на одном Wi-Fi</div>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">✓✓</div>
-        <div class="feature-title">Статусы</div>
-        <div class="feature-text">Видно, доставлено и прочитано сообщение</div>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🔒</div>
-        <div class="feature-title">PIN-код</div>
-        <div class="feature-text">Защита входа в приложение</div>
-      </div>
+    <div class="nav-links">
+      <a href="#news">Что нового</a>
+      <a href="#features">Функции</a>
+      <a href="#security">Безопасность</a>
+      <a href="#faq">FAQ</a>
     </div>
-
-    <div class="install-steps">
-      <h3>📖 Как установить</h3>
-      <div class="step">
-        <div class="step-num">1</div>
-        <div>Нажми кнопку <b>«Скачать APK»</b> выше</div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div>Подожди <b>5 секунд</b> — появится кнопка «Установить»</div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div>Если появится предупреждение — разреши установку из <b>«Неизвестных источников»</b></div>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <div>Открой приложение, введи номер телефона и получи код</div>
-      </div>
-      <div class="step">
-        <div class="step-num">5</div>
-        <div>Придумай PIN и начни общаться! 🎉</div>
-      </div>
-    </div>
-
-    <footer class="footer">
-      <div>© 2025 IO Messenger · Сделано с ❤️</div>
-      <div class="version">beta v0.7</div>
-    </footer>
-
   </div>
-</div>
+</nav>
 
-<!-- ============================================
-     ЭКРАН 2: ОЖИДАНИЕ 5 СЕКУНД
-     ============================================ -->
-<div class="page" id="pageWait">
-  <div class="wait-screen">
+<section class="hero">
+  <div class="beta-badge">🧪 Бета Тест · v1.6</div>
+  <h1>IO Messenger</h1>
+  <p class="tagline">Быстрый и безопасный мессенджер для общения</p>
 
-    <div class="wait-icon">IO</div>
+  <div class="hero-text">
+    IO Messenger — бесплатный мессенджер без рекламы и подписок. Общайся с друзьями, создавай группы, отправляй чёткие фото и голосовые. Установка за минуту, регистрация за 30 секунд.
+  </div>
 
-    <div class="wait-title">Подготовка к скачиванию...</div>
-    <div class="wait-sub">Пожалуйста, подождите несколько секунд. Ссылка на скачивание появится автоматически.</div>
+  <div class="hero-cta">Новое обновление уже доступно!</div>
 
-    <div class="circle-wrap">
-      <svg class="circle-svg" viewBox="0 0 140 140">
+  <div class="download-buttons">
+    <button class="dl-btn dl-btn-main" onclick="startDownload('io-messenger-2.apk','IO Messenger')">
+      <span class="icon">💬</span>
+      <span class="text">
+        <span>Скачать Messenger</span>
+        <small>Основное приложение</small>
+      </span>
+    </button>
+    <button class="dl-btn dl-btn-codes" onclick="startDownload('io-codes.apk','IO Codes')">
+      <span class="icon">🔐</span>
+      <span class="text">
+        <span>Скачать IO Codes</span>
+        <small>Защита аккаунта</small>
+      </span>
+    </button>
+  </div>
+  <div class="file-info">Android 7.0+ · Требуется интернет</div>
+</section>
+
+<section class="section" id="news">
+  <h2 class="section-title">🆕 Что нового в v1.6</h2>
+  <p class="section-sub">Свежие обновления приложения</p>
+
+  <div class="card">
+    <ul class="news-list">
+      <li>
+        <span class="news-icon">🔒</span>
+        <span><b>Шифрование сообщений</b>AES-256-GCM — как в Telegram Secret Chats. Включается в профиле. Даже если перехватят сообщение — не прочитают.</span>
+      </li>
+      <li>
+        <span class="news-icon">🔔</span>
+        <span><b>Уведомления о сообщениях</b>Всплывающий баннер сверху экрана + системное уведомление Android. Тапни по баннеру — откроется чат.</span>
+      </li>
+      <li>
+        <span class="news-icon">🌐</span>
+        <span><b>Глобальный каталог</b>Ищи не только свои чаты, но и других пользователей и группы во всём мессенджере. Кнопка «🌐» в шапке.</span>
+      </li>
+      <li>
+        <span class="news-icon">📸</span>
+        <span><b>Чёткие фото</b>Фото загружаются в оригинальном качестве (1920px). Больше никакого «мыла» — картинки как в настоящих мессенджерах.</span>
+      </li>
+      <li>
+        <span class="news-icon">📞</span>
+        <span><b>Улучшенные звонки</b>6 STUN + 2 TURN сервера. Звонки работают стабильнее, в том числе через мобильную сеть.</span>
+      </li>
+      <li>
+        <span class="news-icon">🎨</span>
+        <span><b>Новая иконка</b>Стильный логотип IO вместо старого. Приложение выглядит современно на рабочем столе.</span>
+      </li>
+    </ul>
+
+    <div class="cta-text" style="margin-top:32px;font-size:16px">
+      📥 Обнови приложение, чтобы получить все новые функции!
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <h2 class="section-title">Что умеет IO Messenger</h2>
+  <p class="section-sub">Всё необходимое для общения — в одном приложении</p>
+
+  <div class="card">
+    <p style="font-size:16px;color:#d0d8e0;line-height:1.7;margin-bottom:24px">
+      IO Messenger — это современный мессенджер, созданный для тех, кто ценит скорость и простоту. Никакой рекламы, никаких подписок — только ты и твои друзья.
+    </p>
+    <ul class="features-list">
+      <li>
+        <span class="emoji">💬</span>
+        <span><b>Личные чаты</b> — общайся один на один
+          <span class="feature-note">⚠️ Сообщения иногда задерживаются из-за недоделанного кода</span>
+        </span>
+      </li>
+      <li>
+        <span class="emoji">👥</span>
+        <span><b>Группы</b> — собирай друзей вместе
+          <span class="feature-note">⚠️ Иногда участники добавляются не сразу</span>
+        </span>
+      </li>
+      <li>
+        <span class="emoji">📢</span>
+        <span><b>Каналы</b> — публикуй новости для всех
+          <span class="feature-note">⚠️ Пока работает нестабильно</span>
+        </span>
+      </li>
+      <li>
+        <span class="emoji">🌀</span>
+        <span><b>Круналы</b> — гибрид группы и канала <span class="new-badge">NEW</span>
+          <span class="feature-note">⚠️ В разработке — могут быть баги</span>
+        </span>
+      </li>
+      <li>
+        <span class="emoji">📷</span>
+        <span><b>Фото в HD</b> — делись моментами <span class="new-badge">NEW</span>
+          <span class="feature-note">✅ Теперь в оригинальном качестве</span>
+        </span>
+      </li>
+      <li>
+        <span class="emoji">🎤</span>
+        <span><b>Голосовые</b> — говори вместо печати
+          <span class="feature-note">⚠️ Максимум 60 секунд, иногда теряются</span>
+        </span>
+      </li>
+      <li>
+        <span class="emoji">📞</span>
+        <span><b>Звонки через интернет</b> <span class="new-badge">NEW</span>
+          <span class="feature-note">✅ Улучшено — 6 STUN + 2 TURN сервера</span>
+        </span>
+      </li>
+      <li>
+        <span class="emoji">🔍</span>
+        <span><b>Поиск</b> — находи чаты, людей и группы <span class="new-badge">NEW</span>
+          <span class="feature-note">✅ С подсветкой совпадений</span>
+        </span>
+      </li>
+      <li>
+        <span class="emoji">🌐</span>
+        <span><b>Глобальный каталог</b> <span class="new-badge">NEW</span>
+          <span class="feature-note">✅ Ищи людей и группы со всего мессенджера</span>
+        </span>
+      </li>
+      <li>
+        <span class="emoji">🔔</span>
+        <span><b>Уведомления</b> <span class="new-badge">NEW</span>
+          <span class="feature-note">✅ Всплывающий баннер + системные уведомления</span>
+        </span>
+      </li>
+      <li>
+        <span class="emoji">🔒</span>
+        <span><b>Шифрование</b> <span class="new-badge">NEW</span>
+          <span class="feature-note">✅ AES-256-GCM — как в Telegram</span>
+        </span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" id="security">
+  <h2 class="section-title">Безопасность</h2>
+  <p class="section-sub">Мы серьёзно относимся к защите твоего аккаунта</p>
+
+  <div class="card">
+    <ul class="security-list">
+      <li>
+        <b>🔐 PIN-код</b>
+        Каждый вход защищён 4-значным PIN-кодом.
+      </li>
+      <li>
+        <b>🚫 Блокировка от подбора</b>
+        6 неверных попыток → блокировка на 1 час.
+      </li>
+      <li>
+        <b>🔑 IO Codes</b>
+        Отдельное приложение с кодами подтверждения. Как в банках и Telegram.
+      </li>
+      <li>
+        <b>🔒 Шифрование AES-256</b>
+        Сообщения шифруются перед отправкой. Никто, кроме тебя и собеседника, не прочитает.
+      </li>
+      <li>
+        <b>📱 Только твоё устройство</b>
+        Коды приходят только на твой телефон.
+      </li>
+    </ul>
+
+    <div class="cta-text" style="margin-top:32px">
+      Твой аккаунт защищён лучше, чем в 90% мессенджеров.
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="info-box">
+    ⚠️ <b>Внимание:</b> это БЕТА-версия. Возможны баги и незавершённые функции. Если нашли проблему — сообщите разработчику.
+  </div>
+</section>
+
+<section class="section" id="faq" style="padding-top:20px">
+  <h2 class="section-title">Частые вопросы</h2>
+  <p class="section-sub">Что чаще всего спрашивают</p>
+
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q"><span>❓ Почему приложение не в Google Play?</span><span class="arrow">▾</span></div>
+    <div class="faq-a">Это бета-версия. Сначала тестируем, потом отправим в Play Market.</div>
+  </div>
+
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q"><span>❓ Что значит «бета-тест»?</span><span class="arrow">▾</span></div>
+    <div class="faq-a">Это значит, что приложение уже работает, но ещё дорабатывается. Мы ищем баги и добавляем функции. Если что-то не работает — сообщи разработчику.</div>
+  </div>
+
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q"><span>❓ Это бесплатно?</span><span class="arrow">▾</span></div>
+    <div class="faq-a">Да, полностью. Никаких платных функций, никаких подписок, никакой рекламы.</div>
+  </div>
+
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q"><span>❓ Как работает шифрование?</span><span class="arrow">▾</span></div>
+    <div class="faq-a">Сообщения шифруются алгоритмом AES-256-GCM перед отправкой. Ключ генерируется для каждого чата отдельно, из номеров участников и секретной соли. Даже если кто-то перехватит сообщение — прочитать не сможет. Чтобы работало — оба участника должны включить шифрование в профиле.</div>
+  </div>
+
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q"><span>❓ Как обновить приложение?</span><span class="arrow">▾</span></div>
+    <div class="faq-a">Просто скачай новый APK с этой же страницы и установи поверх старого. Все чаты и данные сохранятся.</div>
+  </div>
+
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q"><span>❓ Как найти других людей?</span><span class="arrow">▾</span></div>
+    <div class="faq-a">Открой каталог (кнопка 🌐 в шапке чатов) или введи имя/номер в поиске. Увидишь пользователей и группы со всего мессенджера.</div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:20px">
+  <div class="cta-text" style="font-size:22px">
+    Присоединяйся к бета-тестированию — стань частью истории!
+  </div>
+
+  <div class="download-buttons" style="margin-top:32px">
+    <button class="dl-btn dl-btn-main" onclick="startDownload('io-messenger-2.apk','IO Messenger')">
+      <span class="icon">💬</span>
+      <span class="text">
+        <span>Скачать Messenger</span>
+        <small>Основное приложение</small>
+      </span>
+    </button>
+    <button class="dl-btn dl-btn-codes" onclick="startDownload('io-codes.apk','IO Codes')">
+      <span class="icon">🔐</span>
+      <span class="text">
+        <span>Скачать IO Codes</span>
+        <small>Защита аккаунта</small>
+      </span>
+    </button>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-logo">IO Messenger</div>
+  <div>© 2026 · Сделано с ❤️</div>
+  <div class="footer-version">beta v1.6</div>
+</footer>
+
+<div class="modal-overlay" id="downloadModal">
+  <div class="modal-download">
+    <div class="modal-icon">IO</div>
+    <div class="modal-title" id="modalTitle">IO Messenger</div>
+    <div class="modal-sub">Подготовка к скачиванию...</div>
+
+    <div class="progress-circle">
+      <svg width="120" height="120" viewBox="0 0 120 120">
         <defs>
-          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#5288c1"/>
             <stop offset="100%" stop-color="#7dd3fc"/>
           </linearGradient>
         </defs>
-        <circle class="circle-bg" cx="70" cy="70" r="65"></circle>
-        <circle class="circle-progress" id="circleProgress" cx="70" cy="70" r="65"></circle>
+        <circle class="bg" cx="60" cy="60" r="54"></circle>
+        <circle class="progress" id="progressCircle" cx="60" cy="60" r="54"></circle>
       </svg>
-      <div class="circle-number" id="circleNumber">5</div>
+      <div class="progress-num" id="progressNum">5</div>
     </div>
 
-    <div class="wait-status" id="waitStatus">Подготовка файла...</div>
+    <div class="modal-status" id="modalStatus">Подготовка файла...</div>
 
-    <div class="success-check" id="successCheck">✅</div>
-
-    <a class="install-btn" id="installBtn" href="io-messenger.apk" download>
-      <span class="icon">📥</span>
-      <span>Установить приложение</span>
-    </a>
-
-    <button class="back-btn" onclick="goToMainScreen()">← Вернуться назад</button>
-
+    <a class="install-btn" id="installBtn" href="#">⬇️ Установить приложение</a>
+    <button class="cancel-btn" onclick="cancelDownload()">Отмена</button>
   </div>
 </div>
 
 <script>
-  var waitTimer = null;
-  var waitInterval = null;
-  var secondsLeft = 5;
-  var totalCircleLength = 408;
+var downloadTimer=null,downloadInterval=null,downloadSecondsLeft=5,currentFile=null;
 
-  function goToWaitScreen() {
-    document.getElementById('pageMain').classList.remove('active');
-    document.getElementById('pageWait').classList.add('active');
-    window.scrollTo(0, 0);
+function startDownload(file,name){
+  currentFile=file;
+  document.getElementById('modalTitle').textContent=name;
+  document.getElementById('modalStatus').textContent='Подготовка файла...';
+  document.getElementById('progressNum').textContent='5';
+  document.getElementById('progressNum').style.display='';
+  document.getElementById('progressCircle').style.strokeDashoffset=339;
+  document.getElementById('installBtn').classList.remove('show');
+  document.getElementById('downloadModal').classList.add('active');
+  downloadSecondsLeft=5;
+  var startTime=Date.now(),duration=5000;
+  if(downloadInterval)clearInterval(downloadInterval);
+  downloadInterval=setInterval(function(){var e=Date.now()-startTime;var p=Math.min(e/duration,1);
+    document.getElementById('progressCircle').style.strokeDashoffset=339*(1-p)},50);
+  if(downloadTimer)clearInterval(downloadTimer);
+  downloadTimer=setInterval(function(){downloadSecondsLeft--;
+    if(downloadSecondsLeft<=0){clearInterval(downloadTimer);clearInterval(downloadInterval);finishDownload()}
+    else document.getElementById('progressNum').textContent=downloadSecondsLeft},1000)
+}
 
-    secondsLeft = 5;
-    document.getElementById('circleNumber').style.display = '';
-    document.getElementById('circleNumber').textContent = '5';
-    document.getElementById('circleProgress').style.strokeDashoffset = totalCircleLength;
-    document.getElementById('installBtn').classList.remove('show');
-    document.getElementById('successCheck').classList.remove('show');
-    document.getElementById('waitStatus').textContent = 'Подготовка файла...';
+function finishDownload(){
+  document.getElementById('progressNum').style.display='none';
+  document.getElementById('modalStatus').textContent='✅ Файл готов! Нажмите «Установить»';
+  var btn=document.getElementById('installBtn');
+  btn.href=currentFile;
+  btn.setAttribute('download',currentFile);
+  btn.classList.add('show')
+}
 
-    var startTime = Date.now();
-    var duration = 5000;
+function cancelDownload(){
+  if(downloadTimer){clearInterval(downloadTimer);downloadTimer=null}
+  if(downloadInterval){clearInterval(downloadInterval);downloadInterval=null}
+  document.getElementById('progressNum').style.display='';
+  document.getElementById('downloadModal').classList.remove('active')
+}
 
-    if (waitInterval) clearInterval(waitInterval);
-    waitInterval = setInterval(function() {
-      var elapsed = Date.now() - startTime;
-      var progress = Math.min(elapsed / duration, 1);
-      document.getElementById('circleProgress').style.strokeDashoffset = totalCircleLength * (1 - progress);
-    }, 50);
+document.getElementById('installBtn').addEventListener('click',function(){
+  document.getElementById('modalStatus').textContent='⬇️ Скачивание началось...';
+  setTimeout(cancelDownload,1500)
+});
 
-    if (waitTimer) clearInterval(waitTimer);
-    waitTimer = setInterval(function() {
-      secondsLeft--;
-      if (secondsLeft <= 0) {
-        clearInterval(waitTimer);
-        clearInterval(waitInterval);
-        finishWait();
-      } else {
-        document.getElementById('circleNumber').textContent = secondsLeft;
-      }
-    }, 1000);
-  }
+function toggleFaq(el){el.classList.toggle('open')}
 
-  function finishWait() {
-    document.getElementById('circleNumber').style.display = 'none';
-    document.getElementById('successCheck').classList.add('show');
-    document.getElementById('waitStatus').textContent = '✅ Файл готов! Нажмите «Установить»';
-    document.getElementById('installBtn').classList.add('show');
-  }
-
-  function goToMainScreen() {
-    if (waitTimer) { clearInterval(waitTimer); waitTimer = null; }
-    if (waitInterval) { clearInterval(waitInterval); waitInterval = null; }
-    document.getElementById('circleNumber').style.display = '';
-    document.getElementById('pageWait').classList.remove('active');
-    document.getElementById('pageMain').classList.add('active');
-    window.scrollTo(0, 0);
-  }
-
-  document.getElementById('installBtn').addEventListener('click', function() {
-    document.getElementById('waitStatus').textContent = '⬇️ Скачивание началось...';
-  });
+document.getElementById('downloadModal').addEventListener('click',function(e){if(e.target===this)cancelDownload()});
 </script>
-
 </body>
 </html>
